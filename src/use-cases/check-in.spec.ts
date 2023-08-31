@@ -4,6 +4,7 @@ import { InMemoryCheckInsRepository } from '@/repositories/in-memory/in-memory-c
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository'
 import { MaxNumberOfCheckInsError } from './errors/max-number-of-check-ins-error'
 import { MaxDistanceError } from './errors/max-distance-error'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
 
 let checkInsRepository: InMemoryCheckInsRepository
 let gymsRepository: InMemoryGymsRepository
@@ -102,5 +103,16 @@ describe('Check-in Use Case', () => {
         userLongitude: -49.633954,
       }),
     ).rejects.toBeInstanceOf(MaxDistanceError)
+  })
+
+  it('should not be able to check in on an inexistent gym', async () => {
+    await expect(
+      sut.execute({
+        userId: 'user-01',
+        gymId: 'inexistent-gym-in-id',
+        userLatitude: -27.205832,
+        userLongitude: -49.633954,
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
 })
